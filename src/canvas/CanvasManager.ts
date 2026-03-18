@@ -1,8 +1,9 @@
 import { ToolManager, ToolType } from '../tools/ToolManager';
 import { HistoryManager } from '../history/HistoryManager';
+import { Canvas, CanvasPointerEvent, Point } from './Canvas';
 
 export class CanvasManager {
-  private canvas: HTMLCanvasElement;
+  private canvasWrapper: Canvas;
   private ctx: CanvasRenderingContext2D;
   private toolManager: ToolManager;
   private historyManager: HistoryManager;
@@ -10,94 +11,100 @@ export class CanvasManager {
   private startX = 0;
   private startY = 0;
   private snapshot: ImageData | null = null;
+  private currentPath: Point[] = [];
 
   constructor(
-    canvas: HTMLCanvasElement,
+    canvasElement: HTMLCanvasElement,
     toolManager: ToolManager,
     historyManager: HistoryManager
   ) {
-    this.canvas = canvas;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Could not get 2D context');
-    this.ctx = ctx;
     this.toolManager = toolManager;
     this.historyManager = historyManager;
 
+    // Initialize Canvas wrapper with high-DPI and performance optimizations
+    this.canvasWrapper = new Canvas(canvasElement, {
+      enableHighDPI: true,
+      lineCap: 'round',
+      lineJoin: 'round',
+    });
+
+    this.ctx = this.canvasWrapper.getContext();
     this.setupEventListeners();
     this.initializeCanvas();
   }
 
   private initializeCanvas(): void {
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
+    this.ctx.strokeStyle = this.toolManager.getColor();
+    this.ctx.lineWidth = this.toolManager.getBrushSize();
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Fill with white background
+    const { width, height } = this.canvasWrapper.getSize();
+    this.ctx.fillRect(0, 0, width, height);
+    
+    // Save initial state
     this.historyManager.saveState();
   }
 
   private setupEventListeners(): void {
-    // Pointer events for both mouse and touch
-    this.canvas.addEventListener('pointerdown', this.handlePointerDown.bind(this));
-    this.canvas.addEventListener('pointermove', this.handlePointerMove.bind(this));
-    this.canvas.addEventListener('pointerup', this.handlePointerUp.bind(this));
-    this.canvas.addEventListener('pointerleave', this.handlePointerUp.bind(this));
-
-    // Prevent default touch behaviors
-    this.canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
-    this.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+    // Subscribe to Canvas pointer events
+    this.canvasWrapper.on('pointerdown', this.handlePointerDown.bind(this));
+    this.canvasWrapper.on('pointermove', this.handlePointerMove.bind(this));
+    this.canvasWrapper.on('pointerup', this.handlePointerUp.bind(this));
+    this.canvasWrapper.on('resize', this.handleResize.bind(this));
   }
 
-  private getPointerPos(e: PointerEvent): { x: number; y: number } {
-    const rect = this.canvas.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-  }
-
-  private handlePointerDown(e: PointerEvent): void {
+  private handlePointerDown(event: CanvasPointerEvent): void {
     this.isDrawing = true;
-    const pos = this.getPointerPos(e);
-    this.startX = pos.x;
-    this.startY = pos.y;
+    this.startX = event.x;
+    this.startY = event.y;
+    this.currentPath = [{ x: event.x, y: event.y }];
 
     // Save snapshot for shape preview
-    this.snapshot = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    this.snapshot = this.canvasWrapper.getImageData();
 
     const tool = this.toolManager.getCurrentTool();
 
     if (tool === 'brush' || tool === 'eraser') {
       this.ctx.beginPath();
-      this.ctx.moveTo(pos.x, pos.y);
+      this.ctx.moveTo(event.x, event.y);
+      
+      // Draw initial dot for single clicks
+      this.ctx.save();
+      if (tool === 'eraser') {
+        this.ctx.globalCompositeOperation = 'destination-out';
+      }
+      this.ctx.arc(event.x, event.y, this.ctx.lineWidth / 2, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
     }
-
-    this.canvas.setPointerCapture(e.pointerId);
   }
 
-  private handlePointerMove(e: PointerEvent): void {
+  private handlePointerMove(event: CanvasPointerEvent): void {
     if (!this.isDrawing) return;
 
-    const pos = this.getPointerPos(e);
+    this.currentPath.push({ x: event.x, y: event.y });
+    
     const tool = this.toolManager.getCurrentTool();
 
     if (tool === 'brush') {
       this.ctx.globalCompositeOperation = 'source-over';
-      this.ctx.lineTo(pos.x, pos.y);
+      this.ctx.lineTo(event.x, event.y);
       this.ctx.stroke();
     } else if (tool === 'eraser') {
       this.ctx.globalCompositeOperation = 'destination-out';
-      this.ctx.lineTo(pos.x, pos.y);
+      this.ctx.lineTo(event.x, event.y);
       this.ctx.stroke();
     } else if (tool === 'rectangle' || tool === 'circle' || tool === 'line') {
       // Restore snapshot for shape preview
       if (this.snapshot) {
-        this.ctx.putImageData(this.snapshot, 0, 0);
+        this.canvasWrapper.putImageData(this.snapshot);
       }
-      this.drawShape(tool, this.startX, this.startY, pos.x, pos.y);
+      this.drawShape(tool, this.startX, this.startY, event.x, event.y);
     }
   }
 
-  private handlePointerUp(e: PointerEvent): void {
+  private handlePointerUp(event: CanvasPointerEvent): void {
     if (!this.isDrawing) return;
     this.isDrawing = false;
 
@@ -105,11 +112,22 @@ export class CanvasManager {
 
     if (tool === 'brush' || tool === 'eraser') {
       this.ctx.closePath();
+    } else if (tool === 'rectangle' || tool === 'circle' || tool === 'line') {
+      // Finalize shape drawing
+      if (this.snapshot) {
+        this.canvasWrapper.putImageData(this.snapshot);
+      }
+      this.drawShape(tool, this.startX, this.startY, event.x, event.y);
     }
 
     this.ctx.globalCompositeOperation = 'source-over';
     this.historyManager.saveState();
-    this.canvas.releasePointerCapture(e.pointerId);
+    this.currentPath = [];
+  }
+
+  private handleResize(): void {
+    // Canvas wrapper handles resize internally
+    // We may want to re-center or scale content here in the future
   }
 
   private drawShape(
@@ -151,6 +169,7 @@ export class CanvasManager {
   setColor(color: string): void {
     this.toolManager.setColor(color);
     this.ctx.strokeStyle = color;
+    this.ctx.fillStyle = color;
   }
 
   setBrushSize(size: number): void {
@@ -159,15 +178,48 @@ export class CanvasManager {
   }
 
   clear(): void {
+    const { width, height } = this.canvasWrapper.getSize();
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.fillRect(0, 0, width, height);
     this.historyManager.saveState();
   }
 
   download(filename: string): void {
     const link = document.createElement('a');
     link.download = filename;
-    link.href = this.canvas.toDataURL('image/png');
+    link.href = this.canvasWrapper.toDataURL('image/png');
     link.click();
   }
+
+  /**
+   * Get cursor position for status bar updates
+   */
+  getCursorPosition(): { x: number; y: number } | null {
+    const lastPoint = this.canvasWrapper.getLastPoint();
+    return lastPoint;
+  }
+
+  /**
+   * Check if currently drawing
+   */
+  isCurrentlyDrawing(): boolean {
+    return this.isDrawing;
+  }
+
+  /**
+   * Get canvas dimensions
+   */
+  getCanvasSize(): { width: number; height: number } {
+    return this.canvasWrapper.getSize();
+  }
+
+  /**
+   * Dispose resources
+   */
+  dispose(): void {
+    this.canvasWrapper.dispose();
+  }
 }
+
+export default CanvasManager;
