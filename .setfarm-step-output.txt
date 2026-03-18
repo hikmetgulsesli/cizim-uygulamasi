@@ -1,0 +1,5 @@
+STATUS: done
+STORY_BRANCH: us-008
+PR_URL: https://github.com/hikmetgulsesli/cizim-uygulamasi/pull/9
+CHANGES: Implemented Toolbar UI & Empty State for the Drawing App. Created Toolbar.ts component with all tool buttons (brush, eraser, rectangle, circle, line), color picker with 12 preset colors, custom color selector, and brush size slider (1-50px). Implemented responsive layout with left sidebar on desktop (w-64/w-72). Added EmptyStateScreen.ts with Turkish text "Çizmeye başlamak için tıklayın" and "Yeni Tuval Oluştur" button. All touch targets meet 44px minimum requirement.
+TESTS: All 99 tests pass including Toolbar.test.ts (29 tests) covering tool selection, color selection, brush size slider, custom color picker, touch targets (44px minimum), and Turkish labels verification.
