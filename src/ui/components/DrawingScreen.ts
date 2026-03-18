@@ -285,13 +285,6 @@ export class DrawingScreen {
     const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
     if (!canvas) return;
 
-    const wrapper = document.getElementById('canvas-wrapper');
-    if (wrapper) {
-      const rect = wrapper.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-
     this.historyManager = new HistoryManager(canvas);
     this.toolManager = new ToolManager();
     this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
@@ -300,6 +293,40 @@ export class DrawingScreen {
     this.canvasManager.setTool('brush');
     this.canvasManager.setColor(this.currentColor);
     this.canvasManager.setBrushSize(this.currentBrushSize);
+
+    // Start cursor position tracking
+    this.startCursorTracking();
+
+    // Update canvas size display in footer
+    this.updateCanvasSizeDisplay();
+  }
+
+  private startCursorTracking(): void {
+    // Update cursor position at 60fps
+    const updatePosition = () => {
+      const pos = this.canvasManager?.getCursorPosition();
+      const positionEl = document.getElementById('cursor-position');
+      if (positionEl) {
+        if (pos) {
+          positionEl.textContent = `${Math.round(pos.x)}, ${Math.round(pos.y)}`;
+        } else {
+          positionEl.textContent = '--, --';
+        }
+      }
+      requestAnimationFrame(updatePosition);
+    };
+    requestAnimationFrame(updatePosition);
+  }
+
+  private updateCanvasSizeDisplay(): void {
+    const size = this.canvasManager?.getCanvasSize();
+    const footer = document.querySelector('footer');
+    if (footer && size) {
+      const canvasSizeEl = footer.querySelector('span:first-child');
+      if (canvasSizeEl) {
+        canvasSizeEl.textContent = `Tuval: ${Math.round(size.width)}x${Math.round(size.height)}`;
+      }
+    }
   }
 
   private setTool(tool: ToolType): void {
