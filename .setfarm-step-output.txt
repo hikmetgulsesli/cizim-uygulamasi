@@ -1,5 +1,5 @@
 STATUS: done
-STORY_BRANCH: f5feb649-US-009
-PR_URL: https://github.com/hikmetgulsesli/cizim-uygulamasi/pull/10
-CHANGES: Added error boundary handling for canvas initialization failures. Wired all modules together in App.ts main application class. Added global error handlers for canvas-related errors (window error and unhandledrejection events). Implemented error callback in DrawingScreen for graceful error handling. Ensured all components from src/app/ are properly imported and rendered. Verified responsive design works across device viewports. Removed any dead/orphan code from previous stories. Ensured no placeholder text remains in codebase.
-TESTS: All existing tests pass (110 tests): src/canvas/Canvas.test.ts (15 tests), src/history/HistoryManager.test.ts (19 tests), src/ui/components/ColorPicker.test.ts (21 tests), src/tools/ShapeTool.test.ts (21 tests), src/tools/ToolManager.test.ts (17 tests), src/tools/EraserTool.test.ts (9 tests), src/tools/BrushTool.test.ts (8 tests)
+STORY_BRANCH: us-008
+PR_URL: https://github.com/hikmetgulsesli/cizim-uygulamasi/pull/9
+CHANGES: Implemented Toolbar UI & Empty State for the Drawing App. Created Toolbar.ts component with all tool buttons (brush, eraser, rectangle, circle, line), color picker with 12 preset colors, custom color selector, and brush size slider (1-50px). Implemented responsive layout with left sidebar on desktop (w-64/w-72). Added EmptyStateScreen.ts with Turkish text "Çizmeye başlamak için tıklayın" and "Yeni Tuval Oluştur" button. All touch targets meet 44px minimum requirement.
+TESTS: All 99 tests pass including Toolbar.test.ts (29 tests) covering tool selection, color selection, brush size slider, custom color picker, touch targets (44px minimum), and Turkish labels verification.
