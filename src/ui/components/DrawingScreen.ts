@@ -12,6 +12,12 @@ export class DrawingScreen {
   private currentBrushSize: number = 12;
   private currentTool: ToolType = 'brush';
   private container: HTMLElement | null = null;
+  private onError: () => void;
+  private keyboardHandler: ((e: KeyboardEvent) => void) | null = null;
+
+  constructor(onError: () => void = () => {}) {
+    this.onError = onError;
+  }
 
   render(): HTMLElement {
     this.container = document.createElement('div');
@@ -145,42 +151,58 @@ export class DrawingScreen {
   }
 
   private initializeCanvas(): void {
-    const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
-    if (!canvas) return;
-
-    const wrapper = document.getElementById('canvas-wrapper');
-    if (wrapper) {
-      const rect = wrapper.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-
-    this.historyManager = new HistoryManager(canvas);
-    this.toolManager = new ToolManager();
-    this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
-
-    // Set initial tool, color and brush size based on current state
-    this.canvasManager.setTool(this.currentTool);
-    this.canvasManager.setColor(this.currentColor);
-    this.canvasManager.setBrushSize(this.currentBrushSize);
-
-    // Track cursor position
-    canvas.addEventListener('pointermove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = Math.round(e.clientX - rect.left);
-      const y = Math.round(e.clientY - rect.top);
-      const cursorPosition = document.getElementById('cursor-position');
-      if (cursorPosition) {
-        cursorPosition.textContent = `${x}, ${y}`;
+    try {
+      const canvasEl = document.getElementById('drawing-canvas');
+      if (!(canvasEl instanceof HTMLCanvasElement)) {
+        throw new Error('Canvas element with id "drawing-canvas" not found or is not a valid canvas element.');
       }
-    });
+      const canvas = canvasEl;
 
-    // Setup keyboard shortcuts
-    this.setupKeyboardShortcuts();
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Could not get 2D context');
+      }
+
+      const wrapper = document.getElementById('canvas-wrapper');
+      if (wrapper) {
+        const rect = wrapper.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+
+      this.historyManager = new HistoryManager(canvas);
+      this.toolManager = new ToolManager();
+      this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
+
+      // Set initial tool, color and brush size based on current state
+      this.canvasManager.setTool(this.currentTool);
+      this.canvasManager.setColor(this.currentColor);
+      this.canvasManager.setBrushSize(this.currentBrushSize);
+
+      // Track cursor position
+      canvas.addEventListener('pointermove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
+        const cursorPosition = document.getElementById('cursor-position');
+        if (cursorPosition) {
+          cursorPosition.textContent = `${x}, ${y}`;
+        }
+      });
+
+      // Setup keyboard shortcuts (only once)
+      if (!this.keyboardHandler) {
+        this.setupKeyboardShortcuts();
+      }
+    } catch (error) {
+      console.error('Canvas initialization error:', error);
+      this.onError();
+    }
   }
 
   private setupKeyboardShortcuts(): void {
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
+    // Store handler reference to prevent duplicate registrations
+    this.keyboardHandler = (e: KeyboardEvent) => {
       // Ctrl+Z: Undo
       if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
@@ -191,7 +213,8 @@ export class DrawingScreen {
         e.preventDefault();
         this.handleRedo();
       }
-    });
+    };
+    document.addEventListener('keydown', this.keyboardHandler);
   }
 
   private setTool(tool: ToolType): void {
