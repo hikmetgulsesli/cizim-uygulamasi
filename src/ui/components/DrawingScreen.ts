@@ -11,6 +11,7 @@ export class DrawingScreen {
   private currentColor: string = '#dc2626';
   private currentBrushSize: number = 12;
   private onError: () => void;
+  private keyboardHandler: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(onError: () => void = () => {}) {
     this.onError = onError;
@@ -228,10 +229,11 @@ export class DrawingScreen {
 
   private initializeCanvas(): void {
     try {
-      const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
-      if (!canvas) {
-        throw new Error('Canvas element not found');
+      const canvasEl = document.getElementById('drawing-canvas');
+      if (!(canvasEl instanceof HTMLCanvasElement)) {
+        throw new Error('Canvas element with id "drawing-canvas" not found or is not a valid canvas element.');
       }
+      const canvas = canvasEl;
 
       const ctx = canvas.getContext('2d');
       if (!ctx) {
@@ -254,8 +256,10 @@ export class DrawingScreen {
       this.canvasManager.setColor(this.currentColor);
       this.canvasManager.setBrushSize(this.currentBrushSize);
 
-      // Setup keyboard shortcuts
-      this.setupKeyboardShortcuts();
+      // Setup keyboard shortcuts (only once)
+      if (!this.keyboardHandler) {
+        this.setupKeyboardShortcuts();
+      }
     } catch (error) {
       console.error('Canvas initialization error:', error);
       this.onError();
@@ -263,7 +267,8 @@ export class DrawingScreen {
   }
 
   private setupKeyboardShortcuts(): void {
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
+    // Store handler reference to prevent duplicate registrations
+    this.keyboardHandler = (e: KeyboardEvent) => {
       // Ctrl+Z: Undo
       if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
@@ -274,7 +279,8 @@ export class DrawingScreen {
         e.preventDefault();
         this.handleRedo();
       }
-    });
+    };
+    document.addEventListener('keydown', this.keyboardHandler);
   }
 
   private setTool(tool: ToolType): void {

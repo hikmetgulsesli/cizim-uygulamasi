@@ -11,6 +11,7 @@ export class App {
   private emptyStateScreen: EmptyStateScreen | null = null;
   private errorScreen: ErrorScreen | null = null;
   private canvasError: boolean = false;
+  private globalHandlersInstalled: boolean = false;
 
   mount(element: HTMLElement): void {
     this.container = element;
@@ -19,8 +20,12 @@ export class App {
   }
 
   private setupGlobalErrorHandler(): void {
+    if (this.globalHandlersInstalled) return;
+    this.globalHandlersInstalled = true;
+
     window.addEventListener('error', (event: ErrorEvent) => {
-      if (event.message?.includes('canvas') || event.message?.includes('Canvas')) {
+      const msg = event.message || '';
+      if (msg.includes('canvas') || msg.includes('Canvas') || msg.includes('2D context')) {
         this.canvasError = true;
         this.navigateTo('error');
       }
@@ -28,7 +33,7 @@ export class App {
 
     window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
       const reason = String(event.reason);
-      if (reason?.includes('canvas') || reason?.includes('Canvas') || reason?.includes('2D context')) {
+      if (reason.includes('canvas') || reason.includes('Canvas') || reason.includes('2D context')) {
         this.canvasError = true;
         this.navigateTo('error');
       }
@@ -44,7 +49,10 @@ export class App {
       case 'drawing':
         try {
           if (!this.drawingScreen) {
-            this.drawingScreen = new DrawingScreen(() => this.navigateTo('error'));
+            this.drawingScreen = new DrawingScreen(() => {
+              this.canvasError = true;
+              this.navigateTo('error');
+            });
           }
           this.container.appendChild(this.drawingScreen.render());
         } catch (error) {
