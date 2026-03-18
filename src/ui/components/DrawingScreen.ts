@@ -1,26 +1,13 @@
 import { CanvasManager } from '../../canvas/CanvasManager';
 import { ToolManager, ToolType } from '../../tools/ToolManager';
 import { HistoryManager } from '../../history/HistoryManager';
-
-const COLORS = [
-  { name: 'Kırmızı', value: '#dc2626' },
-  { name: 'Mavi', value: '#2563eb' },
-  { name: 'Yeşil', value: '#16a34a' },
-  { name: 'Sarı', value: '#facc15' },
-  { name: 'Turuncu', value: '#f97316' },
-  { name: 'Mor', value: '#9333ea' },
-  { name: 'Pembe', value: '#f472b6' },
-  { name: 'Kahverengi', value: '#92400e' },
-  { name: 'Siyah', value: '#0f172a' },
-  { name: 'Beyaz', value: '#ffffff' },
-  { name: 'Gri', value: '#94a3b8' },
-  { name: 'Turkuaz', value: '#22d3ee' },
-];
+import { ColorPicker } from './ColorPicker';
 
 export class DrawingScreen {
   private canvasManager: CanvasManager | null = null;
   private toolManager: ToolManager | null = null;
   private historyManager: HistoryManager | null = null;
+  private colorPicker: ColorPicker | null = null;
   private currentColor: string = '#dc2626';
   private currentBrushSize: number = 12;
 
@@ -167,42 +154,12 @@ export class DrawingScreen {
     const sidebar = document.createElement('aside');
     sidebar.className = 'w-72 bg-white dark:bg-background-dark border-l border-primary/10 flex flex-col p-6 gap-8 shrink-0';
 
-    // Color palette
-    const colorSection = document.createElement('div');
-    colorSection.innerHTML = `
-      <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Renk Paleti</h3>
-      <div class="grid grid-cols-4 gap-3 mb-4" id="color-grid">
-        ${COLORS.map((color, index) => `
-          <button 
-            class="w-10 h-10 rounded-full ${index === 0 ? 'border-4 border-white dark:border-slate-800 ring-2 ring-primary' : 'border-2 border-transparent'} shadow-sm color-btn transition-all hover:scale-110" 
-            style="background-color: ${color.value}"
-            data-color="${color.value}"
-            data-name="${color.name}"
-            title="${color.name}"
-          ></button>
-        `).join('')}
-      </div>
-      <button class="w-full flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10 transition-colors" id="custom-color-btn">
-        <div class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-4 4-3 3-1.4 1.4a2.1 2.1 0 1 1-3-3L9 13Z"/></svg>
-          <span>Özel Renk</span>
-        </div>
-        <div class="w-6 h-6 rounded-md bg-gradient-to-tr from-primary to-purple-500 border border-white dark:border-slate-700"></div>
-      </button>
-    `;
-
-    // Active color indicator
-    const activeColorSection = document.createElement('div');
-    activeColorSection.className = 'p-4 bg-primary/5 rounded-xl border border-primary/10';
-    activeColorSection.innerHTML = `
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-lg shadow-md" id="active-color-preview" style="background-color: ${this.currentColor}"></div>
-        <div>
-          <p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">Aktif Renk</p>
-          <p class="text-sm font-bold" id="active-color-name">Kırmızı</p>
-        </div>
-      </div>
-    `;
+    // Color picker component
+    this.colorPicker = new ColorPicker(this.currentColor, (color, name) => {
+      this.setColor(color, name);
+    });
+    const colorPickerElement = this.colorPicker.render();
+    sidebar.appendChild(colorPickerElement);
 
     // Brush size
     const brushSizeSection = document.createElement('div');
@@ -230,28 +187,11 @@ export class DrawingScreen {
       </div>
     `;
 
-    sidebar.appendChild(colorSection);
-    sidebar.appendChild(activeColorSection);
     sidebar.appendChild(brushSizeSection);
     sidebar.appendChild(layersSection);
 
     // Event listeners
     setTimeout(() => {
-      // Color selection
-      sidebar.querySelectorAll('.color-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const color = (e.currentTarget as HTMLElement).dataset.color!;
-          const name = (e.currentTarget as HTMLElement).dataset.name!;
-          this.setColor(color, name);
-
-          // Update visual state
-          sidebar.querySelectorAll('.color-btn').forEach(b => {
-            b.className = 'w-10 h-10 rounded-full border-2 border-transparent shadow-sm color-btn transition-all hover:scale-110';
-          });
-          (e.currentTarget as HTMLElement).className = 'w-10 h-10 rounded-full border-4 border-white dark:border-slate-800 ring-2 ring-primary shadow-sm color-btn transition-all hover:scale-110';
-        });
-      });
-
       // Brush size
       const slider = sidebar.querySelector('#brush-size-slider') as HTMLInputElement;
       const display = sidebar.querySelector('#brush-size-display');
@@ -285,6 +225,13 @@ export class DrawingScreen {
     const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
     if (!canvas) return;
 
+    const wrapper = document.getElementById('canvas-wrapper');
+    if (wrapper) {
+      const rect = wrapper.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+
     this.historyManager = new HistoryManager(canvas);
     this.toolManager = new ToolManager();
     this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
@@ -293,55 +240,15 @@ export class DrawingScreen {
     this.canvasManager.setTool('brush');
     this.canvasManager.setColor(this.currentColor);
     this.canvasManager.setBrushSize(this.currentBrushSize);
-
-    // Start cursor position tracking
-    this.startCursorTracking();
-
-    // Update canvas size display in footer
-    this.updateCanvasSizeDisplay();
-  }
-
-  private startCursorTracking(): void {
-    // Update cursor position at 60fps
-    const updatePosition = () => {
-      const pos = this.canvasManager?.getCursorPosition();
-      const positionEl = document.getElementById('cursor-position');
-      if (positionEl) {
-        if (pos) {
-          positionEl.textContent = `${Math.round(pos.x)}, ${Math.round(pos.y)}`;
-        } else {
-          positionEl.textContent = '--, --';
-        }
-      }
-      requestAnimationFrame(updatePosition);
-    };
-    requestAnimationFrame(updatePosition);
-  }
-
-  private updateCanvasSizeDisplay(): void {
-    const size = this.canvasManager?.getCanvasSize();
-    const footer = document.querySelector('footer');
-    if (footer && size) {
-      const canvasSizeEl = footer.querySelector('span:first-child');
-      if (canvasSizeEl) {
-        canvasSizeEl.textContent = `Tuval: ${Math.round(size.width)}x${Math.round(size.height)}`;
-      }
-    }
   }
 
   private setTool(tool: ToolType): void {
     this.canvasManager?.setTool(tool);
   }
 
-  private setColor(color: string, name: string): void {
+  private setColor(color: string, _name: string): void {
     this.currentColor = color;
     this.canvasManager?.setColor(color);
-
-    // Update preview
-    const preview = document.getElementById('active-color-preview');
-    const nameEl = document.getElementById('active-color-name');
-    if (preview) preview.style.backgroundColor = color;
-    if (nameEl) nameEl.textContent = name;
   }
 
   private setBrushSize(size: number): void {
