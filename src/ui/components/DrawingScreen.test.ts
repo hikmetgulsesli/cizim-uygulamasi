@@ -1,11 +1,34 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { DrawingScreen } from './DrawingScreen';
 
+// Mock canvas 2D context
+class MockCanvasRenderingContext2D {
+  clearRect() {}
+  fillRect() {}
+  stroke() {}
+  beginPath() {}
+  moveTo() {}
+  lineTo() {}
+  arc() {}
+  rect() {}
+  fillStyle = '#000000';
+  strokeStyle = '#000000';
+  lineWidth = 1;
+  lineCap = 'round';
+  lineJoin = 'round';
+}
+
 describe('DrawingScreen', () => {
   let drawingScreen: DrawingScreen;
   let container: HTMLElement;
 
   beforeEach(() => {
+    // Mock canvas getContext before creating DrawingScreen
+    HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(new MockCanvasRenderingContext2D());
+    HTMLCanvasElement.prototype.toBlob = vi.fn((callback) => {
+      callback(new Blob(['mock'], { type: 'image/png' }));
+    });
+    
     drawingScreen = new DrawingScreen();
     
     // Create a container for the rendered screen
