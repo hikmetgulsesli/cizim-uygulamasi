@@ -10,6 +10,11 @@ export class DrawingScreen {
   private colorPicker: ColorPicker | null = null;
   private currentColor: string = '#dc2626';
   private currentBrushSize: number = 12;
+  private onError: () => void;
+
+  constructor(onError: () => void = () => {}) {
+    this.onError = onError;
+  }
 
   render(): HTMLElement {
     const container = document.createElement('div');
@@ -222,27 +227,39 @@ export class DrawingScreen {
   }
 
   private initializeCanvas(): void {
-    const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
-    if (!canvas) return;
+    try {
+      const canvas = document.getElementById('drawing-canvas') as HTMLCanvasElement;
+      if (!canvas) {
+        throw new Error('Canvas element not found');
+      }
 
-    const wrapper = document.getElementById('canvas-wrapper');
-    if (wrapper) {
-      const rect = wrapper.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Could not get 2D context');
+      }
+
+      const wrapper = document.getElementById('canvas-wrapper');
+      if (wrapper) {
+        const rect = wrapper.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+
+      this.historyManager = new HistoryManager(canvas);
+      this.toolManager = new ToolManager();
+      this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
+
+      // Set initial tool and color
+      this.canvasManager.setTool('brush');
+      this.canvasManager.setColor(this.currentColor);
+      this.canvasManager.setBrushSize(this.currentBrushSize);
+
+      // Setup keyboard shortcuts
+      this.setupKeyboardShortcuts();
+    } catch (error) {
+      console.error('Canvas initialization error:', error);
+      this.onError();
     }
-
-    this.historyManager = new HistoryManager(canvas);
-    this.toolManager = new ToolManager();
-    this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
-
-    // Set initial tool and color
-    this.canvasManager.setTool('brush');
-    this.canvasManager.setColor(this.currentColor);
-    this.canvasManager.setBrushSize(this.currentBrushSize);
-
-    // Setup keyboard shortcuts
-    this.setupKeyboardShortcuts();
   }
 
   private setupKeyboardShortcuts(): void {

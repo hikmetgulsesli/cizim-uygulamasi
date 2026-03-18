@@ -10,10 +10,29 @@ export class App {
   private drawingScreen: DrawingScreen | null = null;
   private emptyStateScreen: EmptyStateScreen | null = null;
   private errorScreen: ErrorScreen | null = null;
+  private canvasError: boolean = false;
 
   mount(element: HTMLElement): void {
     this.container = element;
+    this.setupGlobalErrorHandler();
     this.render();
+  }
+
+  private setupGlobalErrorHandler(): void {
+    window.addEventListener('error', (event: ErrorEvent) => {
+      if (event.message?.includes('canvas') || event.message?.includes('Canvas')) {
+        this.canvasError = true;
+        this.navigateTo('error');
+      }
+    });
+
+    window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+      const reason = String(event.reason);
+      if (reason?.includes('canvas') || reason?.includes('Canvas') || reason?.includes('2D context')) {
+        this.canvasError = true;
+        this.navigateTo('error');
+      }
+    });
   }
 
   private render(): void {
@@ -23,15 +42,25 @@ export class App {
     
     switch (this.currentScreen) {
       case 'drawing':
-        if (!this.drawingScreen) {
-          this.drawingScreen = new DrawingScreen();
+        try {
+          if (!this.drawingScreen) {
+            this.drawingScreen = new DrawingScreen(() => this.navigateTo('error'));
+          }
+          this.container.appendChild(this.drawingScreen.render());
+        } catch (error) {
+          console.error('Canvas initialization failed:', error);
+          this.canvasError = true;
+          this.currentScreen = 'error';
+          this.render();
         }
-        this.container.appendChild(this.drawingScreen.render());
         break;
       case 'error':
         if (!this.errorScreen) {
           this.errorScreen = new ErrorScreen({
-            onRetry: () => this.navigateTo('empty'),
+            onRetry: () => {
+              this.canvasError = false;
+              this.navigateTo('empty');
+            },
           });
         }
         this.container.appendChild(this.errorScreen.render());
@@ -56,6 +85,10 @@ export class App {
   // Exposed for testing
   getCurrentScreen(): ScreenType {
     return this.currentScreen;
+  }
+
+  hasCanvasError(): boolean {
+    return this.canvasError;
   }
 }
 
