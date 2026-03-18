@@ -103,7 +103,7 @@ export class EmptyStateScreen {
         </div>
         <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3 tracking-tight">Çizmeye Başlayın</h1>
         <p class="text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">
-          Çizmeye başlamak için tıklayın.
+          Çizmeye başlamak için tıklayın
         </p>
         <p class="text-sm font-medium text-primary mb-8 px-4 py-1.5 bg-primary/5 rounded-full">
           Sol panelden araçları seçin

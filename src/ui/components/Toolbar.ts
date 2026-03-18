@@ -25,6 +25,10 @@ export interface ColorOption {
   className: string;
 }
 
+const TOOL_BASE_CLASSES = 'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full text-left min-h-[44px]';
+const TOOL_ACTIVE_CLASSES = 'bg-primary/10 text-primary';
+const TOOL_INACTIVE_CLASSES = 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
+
 export const TOOLS: ToolOption[] = [
   { type: 'brush', icon: '<path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/>', label: 'Fırça' },
   { type: 'eraser', icon: '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>', label: 'Silgi' },
@@ -91,11 +95,7 @@ export class Toolbar {
     TOOLS.forEach((tool) => {
       const isActive = tool.type === this.props.activeTool;
       const toolItem = document.createElement('button');
-      toolItem.className = `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full text-left min-h-[44px] ${
-        isActive 
-          ? 'bg-primary/10 text-primary' 
-          : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
-      }`;
+      toolItem.className = `${TOOL_BASE_CLASSES} ${isActive ? TOOL_ACTIVE_CLASSES : TOOL_INACTIVE_CLASSES}`;
       toolItem.dataset.tool = tool.type;
       toolItem.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${tool.icon}</svg>
@@ -237,9 +237,9 @@ export class Toolbar {
     this.container.querySelectorAll('[data-tool]').forEach((btn) => {
       const toolType = (btn as HTMLElement).dataset.tool as ToolType;
       if (toolType === activeTool) {
-        btn.className = 'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full text-left min-h-[44px] bg-primary/10 text-primary';
+        btn.className = `${TOOL_BASE_CLASSES} ${TOOL_ACTIVE_CLASSES}`;
       } else {
-        btn.className = 'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full text-left min-h-[44px] text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
+        btn.className = `${TOOL_BASE_CLASSES} ${TOOL_INACTIVE_CLASSES}`;
       }
     });
   }
@@ -249,10 +249,22 @@ export class Toolbar {
 
     this.container.querySelectorAll('[data-color]').forEach((btn) => {
       const colorValue = (btn as HTMLElement).dataset.color;
-      if (colorValue === activeColor) {
+      const isActive = colorValue === activeColor;
+      
+      // Reset all classes to base state
+      btn.className = `aspect-square rounded-full transition-transform min-w-[44px] min-h-[44px]`;
+      
+      // Get the color class from original COLORS
+      const colorOption = COLORS.find(c => c.value === colorValue);
+      if (colorOption) {
+        btn.classList.add(colorOption.className);
+      }
+      btn.classList.add('border-2', 'border-white', 'shadow-sm');
+      
+      if (isActive) {
         btn.classList.add('ring-2', 'ring-primary', 'scale-110');
       } else {
-        btn.classList.remove('ring-2', 'ring-primary', 'scale-110');
+        btn.classList.add('hover:scale-110');
       }
     });
   }

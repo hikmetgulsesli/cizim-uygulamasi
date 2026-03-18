@@ -159,8 +159,8 @@ export class DrawingScreen {
     this.toolManager = new ToolManager();
     this.canvasManager = new CanvasManager(canvas, this.toolManager, this.historyManager);
 
-    // Set initial tool and color
-    this.canvasManager.setTool('brush');
+    // Set initial tool, color and brush size based on current state
+    this.canvasManager.setTool(this.currentTool);
     this.canvasManager.setColor(this.currentColor);
     this.canvasManager.setBrushSize(this.currentBrushSize);
 
