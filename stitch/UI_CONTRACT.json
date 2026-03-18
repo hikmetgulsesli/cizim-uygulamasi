@@ -1,0 +1,660 @@
+[
+  {
+    "screenId": "2fbdb7f7aed54c2f8ed9d643733dcc64",
+    "screenTitle": "Çizim Uygulaması",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "undo",
+        "line": 42
+      },
+      {
+        "type": "button",
+        "label": "redo",
+        "line": 45
+      },
+      {
+        "type": "button",
+        "label": "delete\nTemizle",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "download\nİndir",
+        "line": 53
+      },
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 58
+      },
+      {
+        "type": "button",
+        "label": "brush",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "ink_eraser",
+        "line": 73
+      },
+      {
+        "type": "button",
+        "label": "rectangle",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "circle",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "horizontal_rule",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "Çizmeye Başla",
+        "line": 108
+      },
+      {
+        "type": "button",
+        "label": "colorize\nÖzel Renk",
+        "line": 133
+      },
+      {
+        "type": "button",
+        "label": "[icon: palette]",
+        "line": 36
+      },
+      {
+        "type": "button",
+        "label": "[icon: undo]",
+        "line": 43
+      },
+      {
+        "type": "button",
+        "label": "[icon: redo]",
+        "line": 46
+      },
+      {
+        "type": "button",
+        "label": "[icon: delete]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: download]",
+        "line": 54
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 59
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 68
+      },
+      {
+        "type": "button",
+        "label": "[icon: ink_eraser]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: rectangle]",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "[icon: circle]",
+        "line": 86
+      },
+      {
+        "type": "button",
+        "label": "[icon: horizontal_rule]",
+        "line": 92
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 104
+      },
+      {
+        "type": "button",
+        "label": "[icon: colorize]",
+        "line": 135
+      },
+      {
+        "type": "button",
+        "label": "[icon: fiber_manual_record]",
+        "line": 158
+      },
+      {
+        "type": "button",
+        "label": "[icon: fiber_manual_record]",
+        "line": 160
+      },
+      {
+        "type": "button",
+        "label": "[icon: visibility]",
+        "line": 167
+      },
+      {
+        "type": "button",
+        "label": "[icon: lock_open]",
+        "line": 169
+      },
+      {
+        "type": "input",
+        "label": "range",
+        "inputType": "range",
+        "line": 159
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "undo",
+        "line": 42
+      },
+      {
+        "type": "button",
+        "label": "redo",
+        "line": 45
+      },
+      {
+        "type": "button",
+        "label": "delete\nTemizle",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "download\nİndir",
+        "line": 53
+      },
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 58
+      },
+      {
+        "type": "button",
+        "label": "brush",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "ink_eraser",
+        "line": 73
+      },
+      {
+        "type": "button",
+        "label": "rectangle",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "circle",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "horizontal_rule",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "Çizmeye Başla",
+        "line": 108
+      },
+      {
+        "type": "button",
+        "label": "colorize\nÖzel Renk",
+        "line": 133
+      },
+      {
+        "type": "button",
+        "label": "[icon: palette]",
+        "line": 36
+      },
+      {
+        "type": "button",
+        "label": "[icon: undo]",
+        "line": 43
+      },
+      {
+        "type": "button",
+        "label": "[icon: redo]",
+        "line": 46
+      },
+      {
+        "type": "button",
+        "label": "[icon: delete]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: download]",
+        "line": 54
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 59
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 68
+      },
+      {
+        "type": "button",
+        "label": "[icon: ink_eraser]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: rectangle]",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "[icon: circle]",
+        "line": 86
+      },
+      {
+        "type": "button",
+        "label": "[icon: horizontal_rule]",
+        "line": 92
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 104
+      },
+      {
+        "type": "button",
+        "label": "[icon: colorize]",
+        "line": 135
+      },
+      {
+        "type": "button",
+        "label": "[icon: fiber_manual_record]",
+        "line": 158
+      },
+      {
+        "type": "button",
+        "label": "[icon: fiber_manual_record]",
+        "line": 160
+      },
+      {
+        "type": "button",
+        "label": "[icon: visibility]",
+        "line": 167
+      },
+      {
+        "type": "button",
+        "label": "[icon: lock_open]",
+        "line": 169
+      }
+    ],
+    "inputs": [
+      {
+        "type": "input",
+        "label": "range",
+        "inputType": "range",
+        "line": 159
+      }
+    ],
+    "hardcodedData": [],
+    "totalInteractive": 30,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "68246f4e5ad945e595665e8709b3c3da",
+    "screenTitle": "68246f4e5ad945e595665e8709b3c3da",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "close",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "refresh\nYenile",
+        "line": 93
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 44
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: close]",
+        "line": 53
+      },
+      {
+        "type": "button",
+        "label": "[icon: format_paint]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: edit_off]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: refresh]",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "[icon: palette]",
+        "line": 106
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 109
+      },
+      {
+        "type": "button",
+        "label": "[icon: info]",
+        "line": 116
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "close",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "refresh\nYenile",
+        "line": 93
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 44
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 50
+      },
+      {
+        "type": "button",
+        "label": "[icon: close]",
+        "line": 53
+      },
+      {
+        "type": "button",
+        "label": "[icon: format_paint]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: edit_off]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: refresh]",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "[icon: palette]",
+        "line": 106
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 109
+      },
+      {
+        "type": "button",
+        "label": "[icon: info]",
+        "line": 116
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 12,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "82706090e7854c62ad1792b3a420f66a",
+    "screenTitle": "82706090e7854c62ad1792b3a420f66a",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 48
+      },
+      {
+        "type": "button",
+        "label": "share",
+        "line": 51
+      },
+      {
+        "type": "button",
+        "label": "download\nKaydet",
+        "line": 54
+      },
+      {
+        "type": "button",
+        "label": "add_box\nYeni Tuval Oluştur",
+        "line": 124
+      },
+      {
+        "type": "button",
+        "label": "add",
+        "line": 134
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 43
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "[icon: share]",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "[icon: download]",
+        "line": 55
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: edit]",
+        "line": 71
+      },
+      {
+        "type": "button",
+        "label": "[icon: ink_eraser]",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "[icon: category]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: near_me]",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 99
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw_abstract]",
+        "line": 110
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 113
+      },
+      {
+        "type": "button",
+        "label": "[icon: add_box]",
+        "line": 125
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 135
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 48
+      },
+      {
+        "type": "button",
+        "label": "share",
+        "line": 51
+      },
+      {
+        "type": "button",
+        "label": "download\nKaydet",
+        "line": 54
+      },
+      {
+        "type": "button",
+        "label": "add_box\nYeni Tuval Oluştur",
+        "line": 124
+      },
+      {
+        "type": "button",
+        "label": "add",
+        "line": 134
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw]",
+        "line": 43
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 49
+      },
+      {
+        "type": "button",
+        "label": "[icon: share]",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "[icon: download]",
+        "line": 55
+      },
+      {
+        "type": "button",
+        "label": "[icon: brush]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: edit]",
+        "line": 71
+      },
+      {
+        "type": "button",
+        "label": "[icon: ink_eraser]",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "[icon: category]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: near_me]",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 99
+      },
+      {
+        "type": "button",
+        "label": "[icon: draw_abstract]",
+        "line": 110
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 113
+      },
+      {
+        "type": "button",
+        "label": "[icon: add_box]",
+        "line": 125
+      },
+      {
+        "type": "button",
+        "label": "[icon: add]",
+        "line": 135
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 19,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]
