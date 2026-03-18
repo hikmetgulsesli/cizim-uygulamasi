@@ -240,6 +240,24 @@ export class DrawingScreen {
     this.canvasManager.setTool('brush');
     this.canvasManager.setColor(this.currentColor);
     this.canvasManager.setBrushSize(this.currentBrushSize);
+
+    // Setup keyboard shortcuts
+    this.setupKeyboardShortcuts();
+  }
+
+  private setupKeyboardShortcuts(): void {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      // Ctrl+Z: Undo
+      if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        this.handleUndo();
+      }
+      // Ctrl+Shift+Z or Ctrl+Y: Redo
+      else if ((e.ctrlKey && e.key === 'z' && e.shiftKey) || (e.ctrlKey && e.key === 'y')) {
+        e.preventDefault();
+        this.handleRedo();
+      }
+    });
   }
 
   private setTool(tool: ToolType): void {

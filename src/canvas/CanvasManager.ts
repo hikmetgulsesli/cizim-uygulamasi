@@ -161,7 +161,7 @@ export class CanvasManager {
   clear(): void {
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.historyManager.saveState();
+    this.historyManager.reset();
   }
 
   async download(filename: string): Promise<void> {
