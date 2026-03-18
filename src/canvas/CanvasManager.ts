@@ -161,13 +161,28 @@ export class CanvasManager {
   clear(): void {
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.historyManager.saveState();
+    this.historyManager.reset();
   }
 
-  download(filename: string): void {
+  async download(filename: string): Promise<void> {
+    // Use File API and URL.createObjectURL for downloading as specified
+    const blob = await new Promise<Blob | null>((resolve) => {
+      this.canvas.toBlob((blob) => resolve(blob), 'image/png');
+    });
+
+    if (!blob) {
+      throw new Error('Failed to create blob from canvas');
+    }
+
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = filename;
-    link.href = this.canvas.toDataURL('image/png');
+    link.href = url;
     link.click();
+
+    // Clean up the object URL after a short delay
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   }
 }

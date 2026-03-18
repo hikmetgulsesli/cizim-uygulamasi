@@ -174,6 +174,24 @@ export class DrawingScreen {
         cursorPosition.textContent = `${x}, ${y}`;
       }
     });
+
+    // Setup keyboard shortcuts
+    this.setupKeyboardShortcuts();
+  }
+
+  private setupKeyboardShortcuts(): void {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      // Ctrl+Z: Undo
+      if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        this.handleUndo();
+      }
+      // Ctrl+Shift+Z or Ctrl+Y: Redo
+      else if ((e.ctrlKey && e.key === 'z' && e.shiftKey) || (e.ctrlKey && e.key === 'y')) {
+        e.preventDefault();
+        this.handleRedo();
+      }
+    });
   }
 
   private setTool(tool: ToolType): void {
@@ -200,12 +218,12 @@ export class DrawingScreen {
   }
 
   private handleClear(): void {
-    if (confirm('Tuvali temizlemek istediğinizden emin misiniz?')) {
+    if (confirm('Silmek istediğinize emin misiniz?')) {
       this.canvasManager?.clear();
     }
   }
 
-  private handleDownload(): void {
-    this.canvasManager?.download('cizim.png');
+  private async handleDownload(): Promise<void> {
+    await this.canvasManager?.download('cizim.png');
   }
 }
