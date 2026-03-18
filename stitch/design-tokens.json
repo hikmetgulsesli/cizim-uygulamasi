@@ -1,0 +1,14 @@
+{
+  "--color-primary": "#e01a4c",
+  "--color-background-light": "#f8f6f6",
+  "--color-background-dark": "#211115",
+  "--font-display": "Space Grotesk",
+  "--radius-DEFAULT": "0.5rem",
+  "--radius-lg": "1rem",
+  "--radius-xl": "1.5rem",
+  "--radius-full": "9999px",
+  "--color-rose-accent": "#fb7185",
+  "--color-violet-accent": "#a78bfa",
+  "--font-google-0": "Plus Jakarta Sans",
+  "--font-google-1": "Space Grotesk"
+}
