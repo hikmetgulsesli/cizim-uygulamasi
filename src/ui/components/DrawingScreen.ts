@@ -265,12 +265,12 @@ export class DrawingScreen {
   }
 
   private handleClear(): void {
-    if (confirm('Tuvali temizlemek istediğinizden emin misiniz?')) {
+    if (confirm('Silmek istediğinize emin misiniz?')) {
       this.canvasManager?.clear();
     }
   }
 
-  private handleDownload(): void {
-    this.canvasManager?.download('cizim.png');
+  private async handleDownload(): Promise<void> {
+    await this.canvasManager?.download('cizim.png');
   }
 }
