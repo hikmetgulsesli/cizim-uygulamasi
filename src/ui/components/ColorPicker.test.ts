@@ -1,13 +1,14 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ColorPicker, PREDEFINED_COLORS, type ColorOption } from './ColorPicker';
 
 describe('ColorPicker', () => {
   let container: HTMLElement;
-  let onColorChangeMock: jest.Mock;
+  let onColorChangeMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
-    onColorChangeMock = jest.fn();
+    onColorChangeMock = vi.fn();
   });
 
   afterEach(() => {
