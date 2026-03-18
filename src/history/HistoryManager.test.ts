@@ -24,15 +24,11 @@ describe('HistoryManager', () => {
     };
 
     // Create mock context
-    let currentImageData = createMockImageData(100, 100);
-    
     mockCtx = {
       getImageData: vi.fn().mockImplementation(() => {
         return createMockImageData(100, 100);
       }),
-      putImageData: vi.fn().mockImplementation((imageData: ImageData) => {
-        currentImageData = imageData;
-      }),
+      putImageData: vi.fn(),
       fillStyle: '',
       fillRect: vi.fn(),
     } as unknown as CanvasRenderingContext2D;
